@@ -1,0 +1,26 @@
+alert tcp $NOT_SAP_SERVERS any -> $SAP_SERVERS any ( \
+    msg:"SAP EEM SOLMAN CVE-2020-6207 potential RCE attempt via script upload"; \
+    flow:established,to_server; \
+    content:"/EemAdminService/EemAdmin"; http_uri; \
+    content:"envelope"; nocase; http_client_body; \
+    content:":uploadResource"; nocase; http_client_body; \
+    metadata: former_category EXPLOIT; \
+    reference: url, https://github.com/chipik/SAP_EEM_CVE-2020-6207; \
+    reference:cve,2020-6207; \
+    classtype:attempted-user; \
+    sid:1111111; \
+    rev:1; )
+
+alert tcp $NOT_SAP_SERVERS any -> $SAP_SERVERS any ( \
+    msg:"SAP EEM SOLMAN CVE-2020-6207 potential Java code used for RCE"; \
+    flow:established,to_server; \
+    content:"/EemAdminService/EemAdmin"; http_uri; \
+    content:"envelope"; nocase; http_client_body; \
+    pcre: "/ProcessBuilder|getRuntime/i"; \
+    metadata: former_category EXPLOIT; \
+    reference: url, https://github.com/chipik/SAP_EEM_CVE-2020-6207; \
+    reference:cve,2020-6207; \
+    classtype:attempted-user; \
+    sid:1111112; \
+    rev:1; )
+
